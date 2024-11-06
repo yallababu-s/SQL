@@ -1,0 +1,412 @@
+create database case_study2;
+create table Location(
+    Location_ID int,
+    City varchar(100)
+);
+
+insert into Location(Location_ID,City)
+values 
+(122,'New York'),
+(123,'Dallas'),
+(124,'Chicago'),
+(167,'Boston');
+
+
+create table Department_table(
+    Department_id int,
+    Name varchar(100),
+    Location_ID int 
+);
+
+insert into Department_table(Department_id,Name,Location_id)
+values 
+(10,'Accounting',122),
+(20,'Sales',124),
+(30,'Research',123),
+(40,'Operations',167);
+
+
+create table job(
+    Job_id int,
+    Designation varchar(100)
+);
+
+insert into job(Job_id,Designation)
+values 
+(667,'Clerk'),
+(668,'Staff'),
+(669,'Analyst'),
+(670,'Sales Person'),
+(671,'Manager'),
+(672,'President');
+
+create table Employee_table(
+    Employee_id int,
+    Last_name varchar(100),
+    First_name varchar(100),
+    Middle_name varchar(100),
+    Job_id int,
+    Hire_Date date,
+    Salary int,
+    Comm int,
+    Department_id int
+);
+
+insert into Employee_table(Employee_id,Last_name,First_name,Middle_name,Job_id,Hire_Date,Salary,Comm,Department_id)
+values
+(7369,'Smith','John','Q',667,'17-Dec-84',800,Null,20),
+(7499,'Allen','Kevin','J',670,'20-Feb-85',1600,300,30),
+(755,'Doyle','Jean','K',671,'04-Apr-85',2850,Null,30),
+(756,'Dennis','Lynn','S',671,'15-May-85',2750,Null,30),
+(757,'Barker','Leslie','D',671,'10-Jun-85',2200,Null,40),
+(7521,'Wark','Cynthia','D',670,'22-Feb-85',1250,50,50);
+
+
+--list all the employee details 
+select * from employee_table;
+
+--list all department details
+select * from Department_table;
+
+--list all job details 
+select * from job; 
+
+--list all the locations
+select * from location;
+
+--list out the first name,last name, salary, commission for all the employees
+select First_name, Last_name, Salary, Comm
+from employee_table; 
+
+--list out the Employee ID, Last Name, Department ID for all Employees and alias employee Id as "ID of the Employee", Last name as "name of the Employee",Department Id as "Dep_id"
+Select Employee_id as "ID of the Employee", Last_name as "Name of the Employee",Department_id as "Dep_id"
+from Employee_table;
+
+--list out the annual salary of the employees with their names only 
+SELECT CONCAT(First_Name, ' ', Last_Name) AS Employee_Name, Salary * 12 AS Annual_Salary
+FROM employee_table;
+
+WHERE----------------------------------------------
+
+--list all details about "Smith"
+select * from Employee_table 
+where Last_name= 'Smith';
+
+--list out the employees who are working in department 20 
+select * from employee_table 
+where Department_id=20;
+
+--list out the employees who are earning salaries between 3000 and 4500 
+select * from Employee_table
+where Salary BETWEEN 3000 and 4500;
+
+--list out the employees who are working in department 10 or 20 
+select * from Employee_table 
+where Department_id in (10,20);
+
+--find out the employees who are not working in depeartment 10 or 30 
+select * from Employee_table 
+where department_id not in (10,30);
+
+
+--list out the employees whose name starts with 'S'
+select * from employee_table 
+where First_name like 'S%';
+
+--last name 
+select * from Employee_table 
+where Last_name like 'S%';
+
+--list out the employees whose name starts with 'S' and ends with 'H'
+select * from Employee_table 
+where First_name like 'S%' and Last_name like 'H%';
+
+
+--list out the employees whose name legth is 4 and starts with 'S'
+SELECT * FROM employee_table
+WHERE First_Name LIKE 'S___'; 
+
+GRoup by and Having----------------------
+--List out employees who are working in department 10 and draw salaries more than 3500
+SELECT * FROM employee_table
+WHERE Department_ID = 10 AND Salary > 3500;
+
+--List out the employees who are not receiving commission
+select * from employee_table 
+where Comm is null;
+
+--List out the Employee ID and Last Name in ascending order based on the Employee ID
+SELECT Employee_ID, Last_Name
+FROM employee_table
+ORDER BY Employee_ID ASC;
+
+
+--List out the Employee ID and Name in descending order based on salary
+SELECT Employee_ID, CONCAT(First_Name, ' ', Last_Name) AS Name
+FROM employee_table
+ORDER BY Salary DESC;
+
+--List out the employee details according to their Last Name in ascending order
+SELECT * FROM employee_table
+ORDER BY Last_Name ASC;
+
+--List out the employee details according to their Last Name in ascending order and then Department ID in descending order
+SELECT * FROM employee_table
+ORDER BY Last_Name ASC, Department_ID DESC;
+
+--How many employees are in different departments in the organization?
+SELECT Department_ID, COUNT(*) AS Employee_Count
+FROM employee_table
+GROUP BY Department_ID;
+
+--List out the department-wise maximum salary, minimum salary, and average salary of the employees
+SELECT Department_ID, MAX(Salary) AS Max_Salary, MIN(Salary) AS Min_Salary, AVG(Salary) AS Avg_Salary
+FROM Employee_table
+GROUP BY Department_ID;
+
+--List out the job-wise maximum salary, minimum salary, and average salary of the employees
+SELECT Job_ID, MAX(Salary) AS Max_Salary, MIN(Salary) AS Min_Salary, AVG(Salary) AS Avg_Salary
+FROM Employee_table
+GROUP BY Job_ID;
+
+
+--List out the number of employees who joined each month in ascending order
+SELECT MONTH(Hire_Date) AS Join_Month, COUNT(*) AS Employee_Count
+FROM employee_table
+GROUP BY MONTH(Hire_Date)
+ORDER BY Join_Month;
+
+--List out the number of employees for each month and year in ascending order based on the year and month
+SELECT YEAR(Hire_Date) AS Join_Year, MONTH(Hire_Date) AS Join_Month, COUNT(*) AS Employee_Count
+FROM employee_table
+GROUP BY YEAR(Hire_Date), MONTH(Hire_Date)
+ORDER BY Join_Year, Join_Month;
+
+--List out the Department ID having at least four employees
+SELECT Department_ID, COUNT(*) AS Employee_Count
+FROM Employee_table
+GROUP BY Department_ID
+HAVING COUNT(*) >= 4;
+
+--How many employees joined in the month of January?
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE MONTH(Hire_Date) = 1;
+
+--How many employees joined in the month of January or September?
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE MONTH(Hire_Date) IN (1, 9);
+
+--How many employees joined in 1985?
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE YEAR(Hire_Date) = 1985;
+
+
+--How many employees joined each month in 1985?
+SELECT MONTH(Hire_Date) AS Join_Month, COUNT(*) AS Employee_Count
+FROM employee_table
+WHERE YEAR(Hire_Date) = 1985
+GROUP BY MONTH(Hire_Date)
+ORDER BY Join_Month;
+
+
+--How many employees joined in March 1985?
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE MONTH(Hire_Date) = 3 AND YEAR(Hire_Date) = 1985;
+
+
+--Which is the Department ID having greater than or equal to 3 employees joining in April 1985
+SELECT Department_ID, COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE MONTH(Hire_Date) = 4 AND YEAR(Hire_Date) = 1985
+GROUP BY Department_ID
+HAVING COUNT(*) >= 3;
+
+JOINS------------
+
+--List out employees with their department names
+SELECT e.*, d.Department_id
+FROM Employee_table e
+JOIN Department_table d ON e.Department_ID = d.Department_ID;
+
+--Display employees with their designations
+SELECT e.*, j.Job_id
+FROM employee_table e
+JOIN job j ON e.Job_ID = j.Job_ID;
+
+--Display the employees with their department names and regional groups
+SELECT e.*, d.Department_id, l.City
+FROM Employee_table e
+JOIN Department_table d ON e.Department_ID = d.Department_ID
+JOIN location l ON d.Location_ID = l.Location_ID;
+
+--How many employees are working in the sales department?
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table e
+JOIN department d ON e.Department_ID = d. designation
+WHERE d. designation = 'Sales';
+
+--Which is the department having greater than or equal to 5 employees? Display the department names in ascending order
+SELECT d.Department_Name, COUNT(*) AS Employee_Count
+FROM employee_table e
+JOIN departments d ON e.Department_ID = d.Department_ID
+GROUP BY d.Department_Name
+HAVING COUNT(*) >= 5
+ORDER BY d.Department_Name ASC;
+
+--How many jobs are there in the organization? Display with designations
+SELECT COUNT(DISTINCT Job_ID) AS Total_Jobs, Designation
+FROM job
+GROUP BY Designation;
+
+--How many employees are working in "New York"?
+SELECT COUNT(*) AS Employee_Count
+FROM employee_table e
+JOIN department d ON e.Department_ID = d.department_ID
+JOIN location l ON d.Location_ID = l.Location_ID
+WHERE l.City = 'New York';
+
+
+Conditional statements------------------
+--Display the employee details with salary grades. Use a conditional statement to create a grade column:
+SELECT e.*, 
+       CASE
+         WHEN Salary >= 5000 THEN 'A'
+         WHEN Salary >= 3000 AND Salary < 5000 THEN 'B'
+         ELSE 'C'
+       END AS Salary_Grade
+FROM employee_table e;
+
+
+
+--List out the number of employees grade-wise. Use a conditional statement to create a grade column
+SELECT Salary_Grade, COUNT(*) AS Employee_Count
+FROM (
+    SELECT e.*, 
+           CASE
+             WHEN Salary >= 5000 THEN 'A'
+             WHEN Salary >= 3000 AND Salary < 5000 THEN 'B'
+             ELSE 'C'
+           END AS Salary_Grade
+    FROM employee_table e
+) AS SalaryGrades
+GROUP BY Salary_Grade;
+
+
+--Display the employee salary grades and the number of employees between 2000 to 5000 ranges of salary
+SELECT Salary_Grade, COUNT(*) AS Employee_Count
+FROM (
+    SELECT e.*, 
+           CASE
+             WHEN Salary >= 5000 THEN 'A'
+             WHEN Salary >= 3000 AND Salary < 5000 THEN 'B'
+             ELSE 'C'
+           END AS Salary_Grade
+    FROM employee_table e
+    WHERE Salary BETWEEN 2000 AND 5000
+) AS SalaryGrades
+GROUP BY Salary_Grade;
+
+
+
+SUB QUERIES----------
+
+--Display the employees list who got the maximum salary
+SELECT *
+FROM Employee_table
+WHERE Salary = (SELECT MAX(Salary) FROM Employee_table);
+
+--Display the employees who are working in the sales department
+SELECT *
+FROM Employee_table
+WHERE Department_ID = (SELECT Department_ID FROM Department_table WHERE Name = 'Sales');
+
+--display the employees who are working as 'Clerk'
+SELECT *
+FROM Employee_table
+WHERE Job_ID = (SELECT Job_ID FROM job WHERE Designation = 'Clerk');
+
+--Display the list of employees who are living in "New York"
+SELECT *
+FROM employee_table
+WHERE Department_ID IN (
+    SELECT Department_ID
+    FROM department
+    WHERE Location_id IN (
+        SELECT Location_ID
+        FROM location
+        WHERE City = 'New York'
+    )
+);
+
+--Find out the number of employees working in the sales department
+SELECT COUNT(*) AS Employee_Count
+FROM Employee_table
+WHERE Department_ID = (SELECT Department_ID FROM Department_table WHERE  Name = 'Sales');
+
+
+--Update the salaries of employees who are working as clerks on the basis of 10%
+UPDATE Employee_table
+SET Salary = Salary * 1.1
+WHERE Job_ID = (SELECT Job_ID FROM job WHERE Designation = 'Clerk');
+
+--Delete the employees who are working in the accounting department
+ DELETE FROM Employee_table
+WHERE Department_ID = (SELECT Department_ID FROM Department_table WHERE Name = 'Accounting');
+
+--Display the second highest salary drawing employee details
+SELECT *
+FROM employee_table
+WHERE Salary = (
+    SELECT MAX(Salary)
+    FROM Employee_table
+    WHERE Salary < (SELECT MAX(Salary) FROM employee_table)
+);
+
+
+--Display the nth highest salary drawing employee details
+SELECT *
+FROM Employee_table
+ORDER BY Salary DESC
+LIMIT 1 OFFSET n - 1; 
+
+
+--List out the employees who earn more than every employee in department 30
+SELECT *
+FROM Employee_table
+WHERE Salary > ALL (
+    SELECT Salary
+    FROM Employee_table
+    WHERE Department_ID = 30
+);
+
+--list out the employees who earn more than the lowest salary in the department. Find out whose department has no employees
+SELECT *
+FROM Employee_table
+WHERE Salary > (
+    SELECT MIN(Salary)
+    FROM Employee_table
+    WHERE Department_ID = e.Department_ID
+)
+OR (
+    SELECT COUNT(*)
+    FROM Employee_table
+    WHERE Department_ID = e.Department_ID
+) = 0;
+
+--Find out which department has no employees
+SELECT Department
+FROM department
+WHERE Department_ID NOT IN (SELECT DISTINCT Department_ID FROM Employee_table);
+
+--Find out the employees who earn greater than the average salary for their department
+SELECT *
+FROM Employee_table e
+WHERE Salary > (
+    SELECT AVG(Salary)
+    FROM Employee_table
+    WHERE Department_ID = e.Department_ID
+);
